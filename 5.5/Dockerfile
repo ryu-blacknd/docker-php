@@ -9,11 +9,12 @@ VOLUME /var/www/html
 RUN yum -y install epel-release \
  && rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm \
  && rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm \
- && yum -y install --enablerepo=remi-php55 \
+ && yum -y update && yum -y install --enablerepo=remi-php55 \
+    git \
+    curl \
     httpd \
     mod_ssl \
     php \
-    php-devel \
     php-mbstring \
     php-mcrypt \
     php-mysql \
@@ -32,9 +33,7 @@ RUN yum -y install epel-release \
     mysql-community-server \
     mysql-community-client \
     phpMyAdmin \
-    postfix \
-    git \
-    curl
+    postfix
 
 # MySQL
 COPY my.cnf /etc/my.cnf
