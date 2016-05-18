@@ -2,14 +2,11 @@ FROM centos:7
 
 MAINTAINER Ryuichi Sano
 
-EXPOSE 80 443 25
-
-VOLUME /var/www/html
-
-RUN yum -y install epel-release \
+RUN yum -y update \
+ && yum -y install epel-release \
  && rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm \
  && rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm \
- && yum -y update && yum -y install --enablerepo=remi-php55 \
+ && yum -y install --enablerepo=remi-php55 \
     git \
     curl \
     httpd \
@@ -91,6 +88,10 @@ RUN postconf -e myhostname="mail.example.com" \
 RUN mv /etc/httpd/conf.d/phpMyAdmin.conf /etc/httpd/conf.d/phpMyAdmin.conf.default
 COPY phpMyAdmin.conf /etc/httpd/conf.d/
 COPY config.inc.php /usr/share/phpMyAdmin/
+
+EXPOSE 80 443 25
+
+VOLUME /var/www/html
 
 WORKDIR /var/www/html
 
