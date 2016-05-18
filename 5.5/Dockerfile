@@ -1,55 +1,57 @@
-FROM centos:7
+FROM centos:6
 
 MAINTAINER Ryuichi Sano
 
-RUN yum -y update \
- && yum -y install epel-release \
- && rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm \
- && rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm \
- && yum -y install --enablerepo=remi-php55 \
-    git \
-    curl \
-    httpd \
-    mod_ssl \
-    php \
-    php-mbstring \
-    php-mcrypt \
-    php-mysql \
-    php-mysqlnd \
-    php-pdo \
-    php-gd \
-    php-pear \
-    php-xml \
-    php-pecl-xdebug \
-    php-tcpdf \
-    php-pecl-imagick \
-    ImageMagick \
+RUN yum -y install epel-release \
+ && rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm \
+ && rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm \
+ && yum -y install \
+    wget \
+    pcre-devel \
+    libxml2-devel \
+    openssl-devel \
     ImageMagick-devel \
-    ipa-gothic-fonts \
-    ipa-pgothic-fonts \
     mysql-community-server \
-    mysql-community-client \
-    phpMyAdmin \
-    postfix
+    postfix \
+ && yum clean all
 
-# MySQL
-COPY my.cnf /etc/my.cnf
-
-RUN systemctl enable mysqld \
- && systemctl start mysqld \
- && mysqladmin -u root password 'password'
+WORKDIR /tmp/src
 
 # Apache
+RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
+ && tar zxf apr-1.5.2.tar.gz \
+ && cd apr-1.5.2 \
+ && ./configure \
+ && make \
+ && make install
+
+RUN wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//apr/apr-util-1.5.4.tar.gz \
+ && tar zxf apr-util-1.5.4.tar.gz \
+ && cd apr-util-1.5.4 \
+ && ./configure --width-apr=/usr/local/apr \
+ && make \
+ && make install
+
+RUN wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.4.20.tar.gz \
+ && tar zxf httpd-2.4.20.tar.gz \
+ && cd httpd-2.4.20 \
+ && ./configure \
+     --enable-so \
+     --enable-shared \
+     --enable-ssl \
+     --enable-rewrite \
+ && make \
+ && make install
+
 RUN sed -i \
    -e 's~ServerAdmin root@localhost~ServerAdmin root@develop.local~g' \
    -e 's~#ServerName www.example.com:80~ServerName develop.local:80~g' \
    -e 's~AllowOverride None~AllowOverride All~g' \
-   /etc/httpd/conf/httpd.conf \
+   /usr/local/apache2/conf/httpd.conf \
 && sed -i \
    -e 's~#DocumentRoot "/var/www/html"~DocumentRoot "/var/www/html"~g' \
    -e 's~#ServerName www.example.com:443~ServerName develop.local:443~g' \
-   /etc/httpd/conf.d/ssl.conf \
-&& systemctl enable httpd
+   /usr/local/apache2/conf.d/ssl.conf
 
 # PHP
 RUN sed -i \
@@ -61,6 +63,13 @@ RUN sed -i \
     /etc/php.ini \
  && curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer
+
+# MySQL
+COPY my.cnf /etc/my.cnf
+
+RUN checkconfig mysqld on \
+ && service mysqld start \
+ && mysqladmin -u root password 'password'
 
 # Postfix
 RUN postconf -e myhostname="mail.example.com" \
