@@ -21,6 +21,7 @@ RUN yum -y update \
     libc-client-devel \
     libmcrypt-devel \
     ImageMagick-devel \
+    re2c \
     mysql-community-server \
     postfix \
  && yum clean all \
@@ -89,6 +90,7 @@ RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz
     --with-apxs2=/usr/local/apache2/bin/apxs \
     --enable-mbstring \
     --enable-pdo \
+    --enable-zip \
     --with-gd \
     --with-vpx-dir=/usr \
     --with-jpeg-dir=/usr \
@@ -126,7 +128,7 @@ RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.6.1/phpMyAdmin-4.6.1-all-lang
  && chown -R apache:apache /var/www/phpMyAdmin \
  && echo "Include conf/extra/httpd-phpMyAdmin.conf" >> /usr/local/apache2/conf/httpd.conf
 
-COPY phpMyAdmin.conf /etc/httpd/conf.d/
+COPY httpd-phpMyAdmin.conf /usr/local/apache2/conf/extra/
 COPY config.inc.php /var/www/phpMyAdmin/
 
 # MySQL
