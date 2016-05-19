@@ -79,7 +79,8 @@ RUN groupadd apache \
     -e 's~ServerAdmin you@example.com~ServerAdmin root@develop.local~g' \
     /usr/local/apache2/conf/extra/httpd-ssl.conf
 
-RUN openssl genrsa -out server.key 2048 \
+RUN cd /usr/local/apache2/conf \
+ && openssl genrsa -out server.key 2048 \
  && openssl req -new -key server.key -out server.csr -subj '/C=JP/ST=Aichi/L=Nagoya/O=develop.local/OU=Web/CN=develop.local' \
  && openssl x509 -in server.csr -days 3650 -req -signkey server.key > server.crt
 
@@ -113,8 +114,9 @@ RUN sed -i \
     -e 's~upload_max_filesize = 2M~upload_max_filesize = 64M~g' \
     -e 's~;date.timezone =~date.timezone = Asia/Tokyo~g' \
     -e 's~;mbstring.language = Japanese~mbstring.language = Japanese~g' \
-    /usr/local/lib/php.ini \
- && expect -c "spawn pecl install imagick; expect \"Please provide the prefix of Imagemagick installation \[autodetect\] :\"; send \"\n\"; expect eof;" \
+    /usr/local/lib/php.ini
+
+RUN expect -c "spawn pecl install imagick; expect \"Please provide the prefix of Imagemagick installation \[autodetect\] :\"; send \"\n\"; expect eof;" \
  && echo "extension=imagick.so" >> /usr/local/lib/php.ini \
  && curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer \
