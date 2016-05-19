@@ -134,7 +134,7 @@ COPY config.inc.php /var/www/phpMyAdmin/
 # MySQL
 COPY my.cnf /etc/my.cnf
 
-RUN checkconfig mysqld on \
+RUN chkconfig mysqld on \
  && service mysqld start \
  && mysqladmin -u root password 'password'
 

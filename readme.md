@@ -11,11 +11,5 @@ https://hub.docker.com/r/ryublacknd/php/
 * PHP 5.5
 * MySQL 5.6
 * phpMyAdmin 4.6
-
-## ryublacknd/php:5.3
-
-* Apache 2.2
-* PHP 5.3
-* MySQL 5.0
-
-with phpMyAdmin, ImageMagick, Postfix, and more.
+* ImageMagick 6.7
+* Postfix 2.6
