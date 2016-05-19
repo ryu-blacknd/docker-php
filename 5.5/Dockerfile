@@ -97,6 +97,7 @@ RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz
     --with-mysqli=mysqlnd \
     --with-pdo-mysql=mysqlnd \
     --with-curl \
+    --with-openssl \
     --with-mcrypt \
     --with-zlib \
  && make \
