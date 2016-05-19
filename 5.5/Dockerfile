@@ -82,7 +82,8 @@ RUN groupadd apache \
 RUN cd /usr/local/apache2/conf \
  && openssl genrsa -out server.key 2048 \
  && openssl req -new -key server.key -out server.csr -subj '/C=JP/ST=Aichi/L=Nagoya/O=develop.local/OU=Web/CN=develop.local' \
- && openssl x509 -in server.csr -days 3650 -req -signkey server.key > server.crt
+ && openssl x509 -in server.csr -days 3650 -req -signkey server.key > server.crt \
+ && ln -s /usr/local/apache2/bin/apachectl /usr/local/bin/apachectl
 
 # PHP
 RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz \
@@ -149,7 +150,8 @@ RUN postconf -e myhostname="mail.example.com" \
  && postconf -e inet_protocols="ipv4" \
  && postconf -e mydestination='$myhostname, localhost.$mydomain, localhost, $mydomain' \
  && postconf -e mynetworks="172.17.0.0/16 127.0.0.0/8" \
- && echo "smtputf8_enable=no" >> /etc/postfix/main.cf
+ && echo "smtputf8_enable=no" >> /etc/postfix/main.cf \
+ && chkconfig postfix on
 
 # for OP25B
 #RUN postconf -e relayhost="smtp.server.com:587" \
@@ -161,10 +163,6 @@ RUN postconf -e myhostname="mail.example.com" \
 # && postmap /etc/postfix/authinfo \
 # && chmod 640 /etc/postfix/authinfo
 
-RUN chkconfig postfix on \
- && service postfix start
-
-###
 RUN rm -rf /tmp/src
 
 EXPOSE 80 443 25
@@ -173,4 +171,4 @@ VOLUME /var/www/html
 
 WORKDIR /var/www/html
 
-CMD ["/usr/local/apache2/bin/httpd", "-k", "start"]
+ENTRYPOINT service mysqld start && service postfix start && apachectl start && /bin/bash --login
