@@ -77,8 +77,9 @@ RUN groupadd apache \
     -e 's~DocumentRoot "/usr/local/apache2/htdocs"~DocumentRoot "/var/www/html"~g' \
     -e 's~ServerName www.example.com:443~ServerName develop.local:443~g' \
     -e 's~ServerAdmin you@example.com~ServerAdmin root@develop.local~g' \
-    /usr/local/apache2/conf/extra/httpd-ssl.conf \
- && openssl genrsa -out server.key 2048 \
+    /usr/local/apache2/conf/extra/httpd-ssl.conf
+
+RUN openssl genrsa -out server.key 2048 \
  && openssl req -new -key server.key -out server.csr -subj '/C=JP/ST=Aichi/L=Nagoya/O=develop.local/OU=Web/CN=develop.local' \
  && openssl x509 -in server.csr -days 3650 -req -signkey server.key > server.crt
 
