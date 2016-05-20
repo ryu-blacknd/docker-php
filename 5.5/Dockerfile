@@ -170,4 +170,6 @@ VOLUME /var/www/html
 
 WORKDIR /var/www/html
 
-ENTRYPOINT service mysqld start && service postfix start && apachectl start && /bin/bash --login
+ENTRYPOINT service mysqld start && service postfix start
+
+CMD ["/usr/local/apache2/bin/apache2ctl", "-D", "FOREGROUND"]

@@ -1,6 +1,6 @@
 # docker-php
 
-[![Build Status](https://travis-ci.org/ryublacknd/docker-php.svg?branch=master)](https://travis-ci.org/ryublacknd/docker-php)
+[![Build Status](https://travis-ci.org/ryu-blacknd/docker-php.svg?branch=master)](https://travis-ci.org/ryu-blacknd/docker-php)
 
 Docker image: LAMP+ for PHP Developers.
 
