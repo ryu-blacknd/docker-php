@@ -1,14 +1,15 @@
 FROM centos:6
-
 MAINTAINER Ryuichi Sano
+
+WORKDIR /tmp/src
 
 RUN yum -y update \
  && yum -y install epel-release \
- && rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm \
  && rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm \
  && yum -y install \
     wget \
     gcc \
+    supervisor \
     pcre-devel \
     openssl-devel \
     libxml2-devel \
@@ -26,25 +27,21 @@ RUN yum -y update \
  && yum clean all \
  && echo "127.0.0.1 develop.local" >> /etc/hosts
 
-WORKDIR /tmp/src
-
 # Apache
 RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
  && tar zxf apr-1.5.2.tar.gz \
  && cd apr-1.5.2 \
  && ./configure \
  && make \
- && make install
-
-RUN wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//apr/apr-util-1.5.4.tar.gz \
+ && make install \
+ && wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//apr/apr-util-1.5.4.tar.gz \
  && tar zxf apr-util-1.5.4.tar.gz \
  && cd apr-util-1.5.4 \
  && ./configure \
     --with-apr=/usr/local/apr \
  && make \
- && make install
-
-RUN wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.4.20.tar.gz \
+ && make install \
+ && wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.4.20.tar.gz \
  && tar zxf httpd-2.4.20.tar.gz \
  && cd httpd-2.4.20 \
  && ./configure \
@@ -53,9 +50,8 @@ RUN wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.4.20.t
      --enable-ssl \
      --enable-mods-shared=all \
  && make \
- && make install
-
-RUN groupadd apache \
+ && make install \
+ && groupadd apache \
  && useradd -g apache apache \
  && mkdir -p /var/www/html \
  && chown -R apache:apache /var/www \
@@ -76,9 +72,8 @@ RUN groupadd apache \
     -e 's~DocumentRoot "/usr/local/apache2/htdocs"~DocumentRoot "/var/www/html"~g' \
     -e 's~ServerName www.example.com:443~ServerName develop.local:443~g' \
     -e 's~ServerAdmin you@example.com~ServerAdmin root@develop.local~g' \
-    /usr/local/apache2/conf/extra/httpd-ssl.conf
-
-RUN cd /usr/local/apache2/conf \
+    /usr/local/apache2/conf/extra/httpd-ssl.conf \
+ && cd /usr/local/apache2/conf \
  && openssl genrsa -out server.key 2048 \
  && openssl req -new -key server.key -out server.csr -subj '/C=JP/ST=Aichi/L=Nagoya/O=develop.local/OU=Web/CN=develop.local' \
  && openssl x509 -in server.csr -days 3650 -req -signkey server.key > server.crt \
@@ -106,17 +101,15 @@ RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz
     --with-zlib \
  && make \
  && make install \
- && cp php.ini-production /usr/local/lib/php.ini
-
-RUN sed -i \
+ && cp php.ini-production /usr/local/lib/php.ini \
+ && sed -i \
     -e 's~max_execution_time = 30~max_execution_time = 120~g' \
     -e 's~post_max_size = 8M~post_max_size = 64M~g' \
     -e 's~upload_max_filesize = 2M~upload_max_filesize = 64M~g' \
     -e 's~;date.timezone =~date.timezone = Asia/Tokyo~g' \
     -e 's~;mbstring.language = Japanese~mbstring.language = Japanese~g' \
-    /usr/local/lib/php.ini
-
-RUN printf "\n" | pecl install imagick \
+    /usr/local/lib/php.ini \
+ && printf "\n" | pecl install imagick \
  && echo "extension=imagick.so" >> /usr/local/lib/php.ini \
  && curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer \
@@ -164,12 +157,12 @@ RUN postconf -e myhostname="mail.example.com" \
 
 RUN rm -rf /tmp/src
 
+COPY supervisord.conf /etc/
+
 EXPOSE 80 443 25
 
 VOLUME /var/www/html
 
 WORKDIR /var/www/html
 
-ENTRYPOINT service mysqld start && service postfix start
-
-CMD ["apachectl", "-D", "FOREGROUND"]
+CMD ["/usr/bin/supervisord"]
