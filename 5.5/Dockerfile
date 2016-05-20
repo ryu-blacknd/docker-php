@@ -172,4 +172,4 @@ WORKDIR /var/www/html
 
 ENTRYPOINT service mysqld start && service postfix start
 
-CMD ["/usr/local/apache2/bin/apache2ctl", "-D", "FOREGROUND"]
+CMD ["apachectl", "-D", "FOREGROUND"]

@@ -1,3 +1,17 @@
 sudo: required
+
 services:
   - docker
+
+env:
+  matrix:
+    - DOCKERFILE="5.5"
+
+before_script:
+  - docker version
+
+script:
+  - docker build -t ${DOCKERFILE} ./${DOCKERFILE}
+
+after_script:
+  - docker images
