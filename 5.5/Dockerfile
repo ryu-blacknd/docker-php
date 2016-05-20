@@ -9,7 +9,6 @@ RUN yum -y update \
  && yum -y install \
     wget \
     gcc \
-    expect \
     pcre-devel \
     openssl-devel \
     libxml2-devel \
@@ -117,7 +116,7 @@ RUN sed -i \
     -e 's~;mbstring.language = Japanese~mbstring.language = Japanese~g' \
     /usr/local/lib/php.ini
 
-RUN expect -c "spawn pecl install imagick; expect \"Please provide the prefix of Imagemagick installation \[autodetect\] :\"; send \"\n\"; expect eof;" \
+RUN printf "\n" | pecl install imagick \
  && echo "extension=imagick.so" >> /usr/local/lib/php.ini \
  && curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer \
