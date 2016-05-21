@@ -17,15 +17,47 @@ RUN yum -y update \
     libvpx-devel \
     libjpeg-devel \
     libpng-devel \
+    libXpm-devel \
+    gmp-devel \
+    libxslt-devel \
     freetype-devel \
-    libc-client-devel \
     libmcrypt-devel \
+    net-snmp-devel \
+    gdbm-devel \
     ImageMagick-devel \
     re2c \
     mysql-community-server \
     postfix \
  && yum clean all \
  && echo "127.0.0.1 develop.local" >> /etc/hosts
+
+# MySQL
+COPY my.cnf /etc/my.cnf
+
+RUN chkconfig mysqld on \
+ && service mysqld start \
+ && mysqladmin -u root password 'password'
+
+# Postfix
+RUN postconf -e myhostname="mail.example.com" \
+ && postconf -e mydomain="example.com" \
+ && postconf -e myorigin='$mydomain' \
+ && postconf -e inet_interfaces="localhost" \
+ && postconf -e inet_protocols="ipv4" \
+ && postconf -e mydestination='$myhostname, localhost.$mydomain, localhost, $mydomain' \
+ && postconf -e mynetworks="172.17.0.0/16 127.0.0.0/8" \
+ && echo "smtputf8_enable=no" >> /etc/postfix/main.cf \
+ && chkconfig postfix on
+
+# for OP25B
+#RUN postconf -e relayhost="smtp.server.com:587" \
+# && postconf -e smtp_sasl_auth_enable="yes" \
+# && postconf -e smtp_sasl_security_options="noanonymous" \
+# && postconf -e smtp_sasl_mechanism_filter="PLAIN LOGIN CRAM-MD5" \
+# && postconf -e smtp_sasl_password_maps="hash:/etc/postfix/authinfo" \
+# && echo "smtp.server.com:587 user:pass" > /etc/postfix/authinfo \
+# && postmap /etc/postfix/authinfo \
+# && chmod 640 /etc/postfix/authinfo
 
 # Apache
 RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
@@ -80,24 +112,60 @@ RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
  && ln -s /usr/local/apache2/bin/apachectl /usr/local/bin/apachectl
 
 # PHP
-RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz \
+RUN wget ftp://ftp.cac.washington.edu/imap/imap-2007f.tar.gz \
+ && tar zxf imap-2007f.tar.gz \
+ && mv imap-2007f /usr/local \
+ && cd /usr/local/imap-2007f \
+ && ln -s /usr/lib64/openssl/engines/ /usr/local/ssl \
+ && ln -s /usr/include/ /usr/local/ssl/include \
+ && make slx EXTRACFLAGS=-fPIC \
+ && mkdir -p {lib,include} \
+ && cp c-client/*.c lib/ \
+ && cp c-client/*.h include/ \
+ && cp c-client/c-client.a lib/libc-client.a \
+ && rm -f ../imap-2007f.tar.gz
+
+ RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz \
  && tar zxf php.tar.gz \
  && cd php-5.5.35 \
  && ./configure \
     --with-apxs2=/usr/local/apache2/bin/apxs \
+    --with-libdir=lib64 \
+    --enable-bcmath \
+    --enable-calendar \
+    --enable-ctype \
+    --enable-dba \
+    --enable-exif \
+    --enable-ftp \
+    --enable-gd-jis-conv \
+    --enable-gd-native-ttf \
+    --enable-mbregex \
     --enable-mbstring \
+    --enable-opcache \
     --enable-pdo \
+    --enable-soap \
+    --enable-sockets \
     --enable-zip \
+    --with-bz2 \
+    --with-curl \
+    --with-freetype-dir \
+    --with-gettext \
     --with-gd \
     --with-vpx-dir=/usr \
     --with-jpeg-dir=/usr \
     --with-png-dir=/usr \
+    --with-xpm-dir=/usr \
+    --with-gdbm \
+    --with-gmp \
+    --with-imap=/usr/local/imap-2007f \
+    --with-imap-ssl \
     --with-mysql=mysqlnd \
     --with-mysqli=mysqlnd \
     --with-pdo-mysql=mysqlnd \
-    --with-curl \
     --with-openssl \
     --with-mcrypt \
+    --with-snmp \
+    --with-xsl \
     --with-zlib \
  && make \
  && make install \
@@ -109,6 +177,14 @@ RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz
     -e 's~;date.timezone =~date.timezone = Asia/Tokyo~g' \
     -e 's~;mbstring.language = Japanese~mbstring.language = Japanese~g' \
     /usr/local/lib/php.ini \
+ && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-zts-20121212/opcache.so" >> /usr/local/lib/php.ini \
+ && echo "opcache.enable=1" >> /usr/local/lib/php.ini \
+ && echo "opcache.memory_consumption=128" >> /usr/local/lib/php.ini \
+ && echo "opcache.interned_strings_buffer=8" >> /usr/local/lib/php.ini \
+ && echo "opcache.max_accelerated_files=4000" >> /usr/local/lib/php.ini \
+ && echo "opcache.revalidate_freq=60" >> /usr/local/lib/php.ini \
+ && echo "opcache.fast_shutdown=1" >> /usr/local/lib/php.ini \
+ && echo "opcache.enable_cli=1" >> /usr/local/lib/php.ini \
  && printf "\n" | pecl install imagick \
  && echo "extension=imagick.so" >> /usr/local/lib/php.ini \
  && curl -sS https://getcomposer.org/installer | php \
@@ -122,47 +198,17 @@ RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.6.1/phpMyAdmin-4.6.1-all-lang
  && tar zxf phpMyAdmin-4.6.1-all-languages.tar.gz \
  && mv phpMyAdmin-4.6.1-all-languages /var/www/phpMyAdmin \
  && chown -R apache:apache /var/www/phpMyAdmin \
- && echo "Include conf/extra/httpd-phpMyAdmin.conf" >> /usr/local/apache2/conf/httpd.conf
+ && echo "Include conf/extra/httpd-phpMyAdmin.conf" >> /usr/local/apache2/conf/httpd.conf \
+ && rm -rf /tmp/src
 
 COPY httpd-phpMyAdmin.conf /usr/local/apache2/conf/extra/
 COPY config.inc.php /var/www/phpMyAdmin/
-
-# MySQL
-COPY my.cnf /etc/my.cnf
-
-RUN chkconfig mysqld on \
- && service mysqld start \
- && mysqladmin -u root password 'password'
-
-# Postfix
-RUN postconf -e myhostname="mail.example.com" \
- && postconf -e mydomain="example.com" \
- && postconf -e myorigin='$mydomain' \
- && postconf -e inet_interfaces="localhost" \
- && postconf -e inet_protocols="ipv4" \
- && postconf -e mydestination='$myhostname, localhost.$mydomain, localhost, $mydomain' \
- && postconf -e mynetworks="172.17.0.0/16 127.0.0.0/8" \
- && echo "smtputf8_enable=no" >> /etc/postfix/main.cf \
- && chkconfig postfix on
-
-# for OP25B
-#RUN postconf -e relayhost="smtp.server.com:587" \
-# && postconf -e smtp_sasl_auth_enable="yes" \
-# && postconf -e smtp_sasl_security_options="noanonymous" \
-# && postconf -e smtp_sasl_mechanism_filter="PLAIN LOGIN CRAM-MD5" \
-# && postconf -e smtp_sasl_password_maps="hash:/etc/postfix/authinfo" \
-# && echo "smtp.server.com:587 user:pass" > /etc/postfix/authinfo \
-# && postmap /etc/postfix/authinfo \
-# && chmod 640 /etc/postfix/authinfo
-
-RUN rm -rf /tmp/src
-
 COPY supervisord.conf /etc/
 
+# Others
 EXPOSE 80 443 25
-
 VOLUME /var/www/html
 
-WORKDIR /var/www/html
+WORKDIR /var/log
 
 CMD ["/usr/bin/supervisord"]
