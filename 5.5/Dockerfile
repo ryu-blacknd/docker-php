@@ -209,6 +209,6 @@ COPY supervisord.conf /etc/
 EXPOSE 80 443 25
 VOLUME /var/www/html
 
-WORKDIR /var/log
+WORKDIR /var/www/html
 
 CMD ["/usr/bin/supervisord"]
