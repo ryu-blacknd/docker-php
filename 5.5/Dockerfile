@@ -83,8 +83,8 @@ RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
      --enable-mods-shared=all \
  && make \
  && make install \
- && usermod -u 1000 apache \
- && useradd -G apache,ftp apache \
+ && useradd -u 1000 apache \
+ && usermod -G apache,ftp apache \
  && mkdir -p /var/www/html \
  && chown -R apache:apache /var/www \
  && sed -i \
