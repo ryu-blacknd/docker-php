@@ -83,8 +83,8 @@ RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
      --enable-mods-shared=all \
  && make \
  && make install \
- && groupadd apache \
- && useradd -g apache apache \
+ && usermod -u 1000 apache \
+ && useradd -G apache,ftp apache \
  && mkdir -p /var/www/html \
  && chown -R apache:apache /var/www \
  && sed -i \
@@ -170,11 +170,14 @@ RUN wget ftp://ftp.cac.washington.edu/imap/imap-2007f.tar.gz \
  && make \
  && make install \
  && cp php.ini-production /usr/local/lib/php.ini \
+ && mkdir -p /var/lib/php/session \
+ && chown apache:apache /var/lib/php/session \
  && sed -i \
     -e 's~max_execution_time = 30~max_execution_time = 120~g' \
     -e 's~post_max_size = 8M~post_max_size = 64M~g' \
     -e 's~upload_max_filesize = 2M~upload_max_filesize = 64M~g' \
     -e 's~;date.timezone =~date.timezone = Asia/Tokyo~g' \
+    -e 's~;session.save_path = "/tmp"~session.save_path = "/var/lib/php/session"~g' \
     -e 's~;mbstring.language = Japanese~mbstring.language = Japanese~g' \
     /usr/local/lib/php.ini \
  && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-zts-20121212/opcache.so" >> /usr/local/lib/php.ini \
@@ -189,7 +192,8 @@ RUN wget ftp://ftp.cac.washington.edu/imap/imap-2007f.tar.gz \
  && echo "extension=imagick.so" >> /usr/local/lib/php.ini \
  && curl -sS https://getcomposer.org/installer | php \
  && mv composer.phar /usr/local/bin/composer \
- && echo "Include conf/extra/httpd-php5.conf" >> /usr/local/apache2/conf/httpd.conf
+ && echo "Include conf/extra/httpd-php5.conf" >> /usr/local/apache2/conf/httpd.conf \
+ && ln -s /usr/local/lib/php.ini /etc/php.ini
 
 COPY httpd-php5.conf /usr/local/apache2/conf/extra/
 
