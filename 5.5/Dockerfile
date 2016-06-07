@@ -60,20 +60,20 @@ RUN postconf -e myhostname="mail.example.com" \
 # && chmod 640 /etc/postfix/authinfo
 
 # Apache
-RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
+RUN wget http://ftp.jaist.ac.jp/pub/apache/apr/apr-1.5.2.tar.gz \
  && tar zxf apr-1.5.2.tar.gz \
  && cd apr-1.5.2 \
  && ./configure \
  && make \
  && make install \
- && wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//apr/apr-util-1.5.4.tar.gz \
+ && wget http://ftp.jaist.ac.jp/pub/apache/apr/apr-util-1.5.4.tar.gz \
  && tar zxf apr-util-1.5.4.tar.gz \
  && cd apr-util-1.5.4 \
  && ./configure \
     --with-apr=/usr/local/apr \
  && make \
  && make install \
- && wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.4.20.tar.gz \
+ && wget http://ftp.jaist.ac.jp/pub/apache/httpd/httpd-2.4.20.tar.gz \
  && tar zxf httpd-2.4.20.tar.gz \
  && cd httpd-2.4.20 \
  && ./configure \
@@ -83,8 +83,7 @@ RUN wget http://ftp.tsukuba.wide.ad.jp/software/apache//apr/apr-1.5.2.tar.gz \
      --enable-mods-shared=all \
  && make \
  && make install \
- && useradd -u 1000 apache \
- && usermod -G apache,ftp apache \
+ && useradd -u 1000 -G apache,ftp apache \
  && mkdir -p /var/www/html \
  && chown -R apache:apache /var/www \
  && sed -i \
@@ -125,9 +124,9 @@ RUN wget ftp://ftp.cac.washington.edu/imap/imap-2007f.tar.gz \
  && cp c-client/c-client.a lib/libc-client.a \
  && rm -f ../imap-2007f.tar.gz
 
- RUN wget http://jp2.php.net/get/php-5.5.35.tar.gz/from/this/mirror -O php.tar.gz \
+ RUN wget http://jp2.php.net/get/php-5.5.36.tar.gz/from/this/mirror -O php.tar.gz \
  && tar zxf php.tar.gz \
- && cd php-5.5.35 \
+ && cd php-5.5.36 \
  && ./configure \
     --with-apxs2=/usr/local/apache2/bin/apxs \
     --with-libdir=lib64 \
@@ -198,9 +197,9 @@ RUN wget ftp://ftp.cac.washington.edu/imap/imap-2007f.tar.gz \
 COPY httpd-php5.conf /usr/local/apache2/conf/extra/
 
 # phpMyAdmin
-RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.6.1/phpMyAdmin-4.6.1-all-languages.tar.gz \
- && tar zxf phpMyAdmin-4.6.1-all-languages.tar.gz \
- && mv phpMyAdmin-4.6.1-all-languages /var/www/phpMyAdmin \
+RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.6.2/phpMyAdmin-4.6.2-all-languages.tar.gz \
+ && tar zxf phpMyAdmin-4.6.2-all-languages.tar.gz \
+ && mv phpMyAdmin-4.6.2-all-languages /var/www/phpMyAdmin \
  && chown -R apache:apache /var/www/phpMyAdmin \
  && echo "Include conf/extra/httpd-phpMyAdmin.conf" >> /usr/local/apache2/conf/httpd.conf \
  && rm -rf /tmp/src
