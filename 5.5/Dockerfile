@@ -83,7 +83,8 @@ RUN wget http://ftp.jaist.ac.jp/pub/apache/apr/apr-1.5.2.tar.gz \
      --enable-mods-shared=all \
  && make \
  && make install \
- && useradd -u 1000 -G apache,ftp apache \
+ && useradd -u 1000 apache \
+ && usermod -G ftp,apache apache \
  && mkdir -p /var/www/html \
  && chown -R apache:apache /var/www \
  && sed -i \
