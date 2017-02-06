@@ -8,26 +8,19 @@ https://hub.docker.com/r/ryublacknd/php/
 
 ## Environment
 
-* CentOS 6 (64bit)
-* Apache 2.4 + SSL
-* PHP 5.5
-* MySQL 5.6
-* phpMyAdmin 4.6
-* ImageMagick 6.7
-* Postfix 2.6
+* CentOS
+* Apache
+* PHP
+* MySQL
+* phpMyAdmin
+* ImageMagick
 
 ## Usage
-
-first, add a line to `C:\Windows\System32\drivers\etc\hosts`
-
-```
-192.168.99.100 develop.local
-```
 
 start this container
 
 ```
-$ docker run -d -v ${PWD}/html:/var/www/html -p 80:80 -p 443:443 -p 25:25 ryublacknd/php
+$ docker run -d -v ${PWD}/html:/var/www/html -p 80:80 ryublacknd/php
 ```
 
 or

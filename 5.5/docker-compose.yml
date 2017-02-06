@@ -1,5 +1,5 @@
 php:
-  image: ryublacknd/php
+  image: ryublacknd/php:55
   ports:
     - 80:80
     - 443:443
