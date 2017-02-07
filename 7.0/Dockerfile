@@ -30,16 +30,15 @@ RUN yum -y install --enablerepo=epel,remi-php70,remi \
                     php-cli \
                     php-devel \
                     php-gd \
-                    php-imagick \
                     php-mbstring \
                     php-mcrypt \
                     php-mysqlnd \
                     php-pear \
+                    php-pecl-imagick \
+                    php-pecl-xdebug \
                     php-phpunit-PHPUnit \
                     php-pdo \
                     php-xml \
-                    php-xdebug \
-                    php-memcached \
                     phpMyAdmin
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 
