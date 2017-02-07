@@ -1,8 +1,7 @@
 php:
-  image: ryublacknd/php:56
+  image: ryublacknd/php:5.6
   ports:
     - "80:80"
-    - "443:443"
     - "3306:3306"
   volumes:
     - ./html:/var/www/html

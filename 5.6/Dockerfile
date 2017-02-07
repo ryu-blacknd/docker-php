@@ -21,8 +21,8 @@ RUN yum -y install  curl \
                     httpd-devel \
                     libmcrypt \
                     mysql-server \
-                    openssl-devel \
                     supervisor \
+                    vim \
                     wget
 RUN yum -y install --enablerepo=epel,remi-php56,remi \
                     php \
@@ -49,5 +49,5 @@ COPY virtual.conf /etc/httpd/conf.d/virtual.conf
 COPY my.cnf /etc/my.cnf
 ADD supervisord.conf /etc/supervisord.conf
 
-EXPOSE 80 443 3306
+EXPOSE 80 3306
 CMD ["/usr/bin/supervisord"]

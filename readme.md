@@ -10,7 +10,7 @@ https://hub.docker.com/r/ryublacknd/php/
 
 * CentOS
 * Apache
-* PHP
+* PHP (5.5/5.6)
 * MySQL
 * phpMyAdmin
 * ImageMagick
@@ -20,7 +20,7 @@ https://hub.docker.com/r/ryublacknd/php/
 start this container
 
 ```
-$ docker run -d -v ${PWD}/html:/var/www/html -p 80:80 ryublacknd/php
+$ docker run -d -v ${PWD}/html:/var/www/html -p 80:80 ryublacknd/php:5.6
 ```
 
 or
