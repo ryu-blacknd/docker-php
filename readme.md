@@ -8,10 +8,10 @@ https://hub.docker.com/r/ryublacknd/php/
 
 ## Environment
 
-* CentOS
-* Apache
-* PHP (5.5/5.6)
-* MySQL
+* CentOS 6
+* Apache 2.2
+* PHP (Tag: [5.5](https://github.com/ryu-blacknd/docker-php/tree/master/5.5), [5.6](https://github.com/ryu-blacknd/docker-php/tree/master/5.6), [7.0](https://github.com/ryu-blacknd/docker-php/tree/master/7.0))
+* MySQL 5.1
 * phpMyAdmin
 * ImageMagick
 

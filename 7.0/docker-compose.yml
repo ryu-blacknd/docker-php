@@ -1,6 +1,6 @@
 php:
-  container_name: php55
-  image: ryublacknd/php:5.5
+  container_name: php70
+  image: ryublacknd/php:7.0
   ports:
     - "8080:80"
     - "8443:443"

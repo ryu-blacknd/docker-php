@@ -1,0 +1,8 @@
+php:
+  image: ryublacknd/php:55
+  ports:
+    - 80:80
+    - 443:443
+    - 25:25
+  volumes:
+    - ${PWD}/html:/var/www/html
