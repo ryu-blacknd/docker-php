@@ -21,6 +21,7 @@ RUN yum -y install  curl \
                     httpd-devel \
                     libmcrypt \
                     mysql-server \
+                    openssl-devel \
                     supervisor \
                     vim \
                     wget

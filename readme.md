@@ -20,7 +20,7 @@ https://hub.docker.com/r/ryublacknd/php/
 start this container
 
 ```
-$ docker run -d -v ${PWD}/html:/var/www/html -p 80:80 ryublacknd/php:5.6
+$ docker run -d -v ${PWD}/html:/var/www/html -p 80:80 -p 443:443 ryublacknd/php:5.6
 ```
 
 or
