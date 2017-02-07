@@ -51,7 +51,4 @@ COPY supervisord.conf /etc/supervisord.conf
 
 WORKDIR /var/www/html
 
-EXPOSE 80
-EXPOSE 443
-
 CMD ["/usr/bin/supervisord"]
