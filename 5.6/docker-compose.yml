@@ -2,7 +2,7 @@ php:
   container_name: php56
   image: ryublacknd/php:5.6
   ports:
-    - "80:80"
-    - "3306:3306"
+    - "8080:80"
+    - "8443:443"
   volumes:
     - ./html:/var/www/html

@@ -47,7 +47,11 @@ RUN rm -f /var/www/error/noindex.html
 
 COPY virtual.conf /etc/httpd/conf.d/virtual.conf
 COPY my.cnf /etc/my.cnf
-ADD supervisord.conf /etc/supervisord.conf
+COPY supervisord.conf /etc/supervisord.conf
 
-EXPOSE 80 3306
+WORKDIR /var/www/html
+
+EXPOSE 80
+EXPOSE 443
+
 CMD ["/usr/bin/supervisord"]
