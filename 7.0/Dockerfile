@@ -25,7 +25,7 @@ RUN yum -y install  curl \
                     supervisor \
                     vim \
                     wget
-RUN yum -y install --enablerepo=remi,remi-php70 \
+RUN yum -y install --enablerepo=remi,remi-php70 --skip-broken \
                     php \
                     php-cli \
                     php-devel \
@@ -42,6 +42,10 @@ RUN yum -y install --enablerepo=remi,remi-php70 \
                     phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
+RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
+RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
+
+RUN sed -i -e "s|Deny from All$|# Deny from All|g" /etc/httpd/conf.d/phpMyAdmin.conf
 
 RUN rm -f /etc/httpd/conf.d/welcome.conf
 RUN rm -f /var/www/error/noindex.html

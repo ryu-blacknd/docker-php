@@ -1,0 +1,8 @@
+php:
+  container_name: php71
+  image: ryublacknd/php:7.1
+  ports:
+    - "8080:80"
+    - "8443:443"
+  volumes:
+    - ./html:/var/www/html
