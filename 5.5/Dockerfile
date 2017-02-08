@@ -25,7 +25,7 @@ RUN yum -y install  curl \
                     supervisor \
                     vim \
                     wget
-RUN yum -y install --enablerepo=remi,remi-php55 --disablerepo=base --skip-broken \
+RUN yum -y install --enablerepo=remi,remi-php55 --skip-broken \
                     php \
                     php-cli \
                     php-devel \
@@ -38,8 +38,8 @@ RUN yum -y install --enablerepo=remi,remi-php55 --disablerepo=base --skip-broken
                     php-pecl-xdebug \
                     php-phpunit-PHPUnit \
                     php-pdo \
-                    php-xml
-RUN yum -y install  phpMyAdmin
+                    php-xml \
+                    phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
