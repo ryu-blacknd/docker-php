@@ -21,7 +21,7 @@ RUN yum -y install --enablerepo=remi,remi-php55 \
     git \
     httpd \
     httpd-devel \
-    ImageMagick-last \
+    ImageMagick-devel \
     libmcrypt \
     mysql-server \
     openssl-devel \
@@ -38,11 +38,9 @@ RUN yum -y install --enablerepo=remi,remi-php55 \
     php-pear \
     php-pecl-imagick \
     php-pecl-xdebug \
-    php-phpunit-PHPUnit \
     php-pdo \
     php-xml \
-    php-xml
-RUN yum -y install phpMyAdmin
+    phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini

@@ -21,7 +21,7 @@ RUN yum -y install --enablerepo=remi,remi-php70 \
     git \
     httpd \
     httpd-devel \
-    ImageMagick-last \
+    ImageMagick-devel \
     libmcrypt \
     mysql-server \
     openssl-devel \

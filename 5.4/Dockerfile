@@ -21,7 +21,7 @@ RUN yum -y install --enablerepo=remi \
     git \
     httpd \
     httpd-devel \
-    ImageMagick-last \
+    ImageMagick-devel \
     libmcrypt \
     mysql-server \
     openssl-devel \
@@ -38,7 +38,6 @@ RUN yum -y install --enablerepo=remi \
     php-pear \
     php-pecl-imagick \
     php-pecl-xdebug \
-    php-phpunit-PHPUnit \
     php-pdo \
     php-xml
 RUN yum -y install phpMyAdmin
