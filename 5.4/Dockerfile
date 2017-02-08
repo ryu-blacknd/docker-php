@@ -28,21 +28,29 @@ RUN yum -y install --enablerepo=remi \
     supervisor \
     vim \
     wget \
-    php \
-    php-cli \
-    php-devel \
-    php-gd \
-    php-mbstring \
-    php-mcrypt \
-    php-mysqlnd \
-    php-pear \
-    php-pecl-imagick \
-    php-pecl-xdebug \
-    php-pdo \
-    php-xml \
+    php54-php \
+    php54-php-cli \
+    php54-php-devel \
+    php54-php-gd \
+    php54-php-mbstring \
+    php54-php-mcrypt \
+    php54-php-mysqlnd \
+    php54-php-pear \
+    php54-php-pecl-imagick \
+    php54-php-pecl-xdebug \
+    php54-php-pdo \
+    php54-php-xml \
     php54-php-tidy \
-    php54-php-bcmath
-RUN yum -y install phpMyAdmin
+    php54-php-bcmath \
+    gettext
+
+WORKDIR /var/www/html
+RUN wget https://github.com/phpmyadmin/phpmyadmin/archive/RELEASE_4_4_15_10.tar.gz
+RUN tar zxf RELEASE_4_4_15_10.tar.gz
+RUN rm -f RELEASE_4_4_15_10.tar.gz
+RUN mv phpmyadmin-RELEASE_4_4_15_10 phpmyadmin
+WORKDIR /var/www/html/phpmyadmin
+RUN scripts/generate-mo
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
@@ -55,6 +63,7 @@ RUN rm -f /var/www/error/noindex.html
 
 COPY virtual.conf /etc/httpd/conf.d/virtual.conf
 COPY my.cnf /etc/my.cnf
+COPY config.inc.php /var/www/html/phpmyadmin/config.inc.php
 COPY supervisord.conf /etc/supervisord.conf
 
 RUN /etc/init.d/mysqld start \
