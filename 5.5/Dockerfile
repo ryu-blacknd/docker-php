@@ -41,7 +41,8 @@ RUN yum -y install --enablerepo=remi,remi-php55 \
     php-phpunit-PHPUnit \
     php-pdo \
     php-xml \
-    phpMyAdmin
+    php-xml
+RUN yum -y install phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
