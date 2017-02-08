@@ -39,7 +39,9 @@ RUN yum -y install --enablerepo=remi \
     php-pecl-imagick \
     php-pecl-xdebug \
     php-pdo \
-    php-xml
+    php-xml \
+    php54-php-tidy \
+    php54-php-bcmath
 RUN yum -y install phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
