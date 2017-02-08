@@ -38,14 +38,14 @@ RUN yum -y install --enablerepo=remi --skip-broken \
                     php-pecl-xdebug \
                     php-phpunit-PHPUnit \
                     php-pdo \
-                    php-xml \
-                    phpMyAdmin
+                    php-xml
+RUN yum -y install  phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
 RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
 
-RUN sed -i -e "s|Deny from All$|# Deny from All|g" /etc/httpd/conf.d/phpMyAdmin.conf
+RUN sed -i -e "s|Allow from 127.0.0.1$|Allow from All|g" /etc/httpd/conf.d/phpMyAdmin.conf
 
 RUN rm -f /etc/httpd/conf.d/welcome.conf
 RUN rm -f /var/www/error/noindex.html
