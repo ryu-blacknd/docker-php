@@ -55,6 +55,7 @@ COPY my.cnf /etc/my.cnf
 COPY supervisord.conf /etc/supervisord.conf
 
 RUN /etc/init.d/mysqld start
+RUN sleep 10s
 RUN mysqladmin -u root password 'password'
 RUN /etc/init.d/mysqld stop
 
