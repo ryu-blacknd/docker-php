@@ -25,7 +25,7 @@ RUN yum -y install  curl \
                     supervisor \
                     vim \
                     wget
-RUN yum -y install --enablerepo=remi,remi-php56 \
+RUN yum -y install --enablerepo=remi --skip-broken \
                     php \
                     php-cli \
                     php-devel \

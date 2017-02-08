@@ -1,0 +1,8 @@
+php:
+  container_name: php53
+  image: ryublacknd/php:5.3
+  ports:
+    - "8080:80"
+    - "8443:443"
+  volumes:
+    - ./html:/var/www/html
