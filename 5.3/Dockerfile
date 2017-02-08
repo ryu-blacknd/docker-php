@@ -6,40 +6,42 @@ RUN echo 'ZONE="Asia/Tokyo"' >> /etc/sysconfig/clock
 RUN echo 'UTC="false"' >> /etc/sysconfig/clock
 RUN cp -p /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
-RUN yum -y update
 RUN yum -y install epel-release
 RUN rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+RUN yum -y update
 
 RUN yum -y groupinstall "Japanese Support"
 RUN localedef -f UTF-8 -i ja_JP ja_JP.utf8
 RUN echo 'LANG="ja_JP.UTF-8"' > /etc/sysconfig/i18n
 
-RUN yum -y install  curl \
-                    freetype-devel \
-                    git \
-                    httpd \
-                    httpd-devel \
-                    libmcrypt \
-                    mysql-server \
-                    openssl-devel \
-                    supervisor \
-                    vim \
-                    wget
-RUN yum -y install --skip-broken \
-                    php \
-                    php-cli \
-                    php-devel \
-                    php-gd \
-                    php-mbstring \
-                    php-mcrypt \
-                    php-mysqlnd \
-                    php-pear \
-                    php-pecl-imagick \
-                    php-pecl-xdebug \
-                    php-phpunit-PHPUnit \
-                    php-pdo \
-                    php-xml \
-                    phpMyAdmin
+RUN yum -y install \
+    curl \
+    freetype-devel \
+    gd-last \
+    git \
+    httpd \
+    httpd-devel \
+    ImageMagick-last \
+    libmcrypt \
+    mysql-server \
+    openssl-devel \
+    supervisor \
+    vim \
+    wget \
+    php \
+    php-cli \
+    php-devel \
+    php-gd \
+    php-mbstring \
+    php-mcrypt \
+    php-mysqlnd \
+    php-pear \
+    php-pecl-imagick \
+    php-pecl-xdebug \
+    php-phpunit-PHPUnit \
+    php-pdo \
+    php-xml \
+    phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
