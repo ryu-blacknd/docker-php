@@ -54,6 +54,10 @@ COPY virtual.conf /etc/httpd/conf.d/virtual.conf
 COPY my.cnf /etc/my.cnf
 COPY supervisord.conf /etc/supervisord.conf
 
+RUN /etc/init.d/mysqld start
+RUN mysqladmin -u root password 'password'
+RUN /etc/init.d/mysqld stop
+
 WORKDIR /var/www/html
 
 CMD ["/usr/bin/supervisord"]
