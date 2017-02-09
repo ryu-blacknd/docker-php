@@ -44,12 +44,12 @@ RUN yum -y install --enablerepo=remi \
     php-bcmath \
     gettext
 
-WORKDIR /var/www/html
+WORKDIR /var/www
 RUN wget https://github.com/phpmyadmin/phpmyadmin/archive/RELEASE_4_4_15_10.tar.gz
 RUN tar zxf RELEASE_4_4_15_10.tar.gz
 RUN rm -f RELEASE_4_4_15_10.tar.gz
 RUN mv phpmyadmin-RELEASE_4_4_15_10 phpmyadmin
-WORKDIR /var/www/html/phpmyadmin
+WORKDIR /var/www/phpmyadmin
 RUN scripts/generate-mo
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
@@ -62,9 +62,10 @@ RUN rm -f /etc/httpd/conf.d/welcome.conf
 RUN rm -f /var/www/error/noindex.html
 
 COPY virtual.conf /etc/httpd/conf.d/virtual.conf
+COPY phpMyAdmin.conf /etc/httpd/conf.d/phpMyAdmin.conf
 COPY my.cnf /etc/my.cnf
-COPY config.inc.php /var/www/html/phpmyadmin/config.inc.php
-RUN  chmod 660 /var/www/html/phpmyadmin/config.inc.php
+COPY config.inc.php /var/www/phpmyadmin/config.inc.php
+RUN  chmod 660 /var/www/phpmyadmin/config.inc.php
 COPY supervisord.conf /etc/supervisord.conf
 
 RUN /etc/init.d/mysqld start \

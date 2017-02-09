@@ -43,3 +43,9 @@ http://localhost:8080/
 PHPスクリプトは、ホストの`html`ディレクトリにファイルを置くだけで動作する。
 
 メール送信テストは[MailCatcher](https://mailcatcher.me/)がオススメ。
+
+## 注意点
+
+Docker for Windowsの場合、時刻が9時間進む問題があります。
+
+これはWindowsのHyper-V マネージャーで、MobyLinuxVM > 設定 > 統合サービス > 時刻の同期 をチェックすることで解決します。
