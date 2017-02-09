@@ -28,20 +28,20 @@ RUN yum -y install --enablerepo=remi \
     supervisor \
     vim \
     wget \
-    php54-php \
-    php54-php-cli \
-    php54-php-devel \
-    php54-php-gd \
-    php54-php-mbstring \
-    php54-php-mcrypt \
-    php54-php-mysqlnd \
-    php54-php-pear \
-    php54-php-pecl-imagick \
-    php54-php-pecl-xdebug \
-    php54-php-pdo \
-    php54-php-xml \
-    php54-php-tidy \
-    php54-php-bcmath \
+    php \
+    php-cli \
+    php-devel \
+    php-gd \
+    php-mbstring \
+    php-mcrypt \
+    php-mysqlnd \
+    php-pear \
+    php-pecl-imagick \
+    php-pecl-xdebug \
+    php-pdo \
+    php-xml \
+    php-tidy \
+    php-bcmath \
     gettext
 
 WORKDIR /var/www/html
@@ -56,7 +56,7 @@ RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
 RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
 
-RUN sed -i -e "s|Allow from 127.0.0.1$|Allow from All|g" /etc/httpd/conf.d/phpMyAdmin.conf
+#RUN sed -i -e "s|Allow from 127.0.0.1$|Allow from All|g" /etc/httpd/conf.d/phpMyAdmin.conf
 
 RUN rm -f /etc/httpd/conf.d/welcome.conf
 RUN rm -f /var/www/error/noindex.html
@@ -64,6 +64,7 @@ RUN rm -f /var/www/error/noindex.html
 COPY virtual.conf /etc/httpd/conf.d/virtual.conf
 COPY my.cnf /etc/my.cnf
 COPY config.inc.php /var/www/html/phpmyadmin/config.inc.php
+RUN  chmod 660 /var/www/html/phpmyadmin/config.inc.php
 COPY supervisord.conf /etc/supervisord.conf
 
 RUN /etc/init.d/mysqld start \
