@@ -42,15 +42,8 @@ RUN yum -y install --enablerepo=remi \
     php-xml \
     php-tidy \
     php-bcmath \
-    gettext
-
-WORKDIR /var/www
-RUN wget https://github.com/phpmyadmin/phpmyadmin/archive/RELEASE_4_4_15_10.tar.gz
-RUN tar zxf RELEASE_4_4_15_10.tar.gz
-RUN rm -f RELEASE_4_4_15_10.tar.gz
-RUN mv phpmyadmin-RELEASE_4_4_15_10 phpmyadmin
-WORKDIR /var/www/phpmyadmin
-RUN scripts/generate-mo
+    gettext \
+    unzip
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
@@ -61,11 +54,16 @@ RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
 RUN rm -f /etc/httpd/conf.d/welcome.conf
 RUN rm -f /var/www/error/noindex.html
 
+WORKDIR /var/www
+RUN wget https://files.phpmyadmin.net/phpMyAdmin/4.4.15.10/phpMyAdmin-4.4.15.10-all-languages.zip \
+ && unzip phpMyAdmin-4.4.15.10-all-languages.zip \
+ && rm -f phpMyAdmin-4.4.15.10-all-languages.zip \
+ && mv phpMyAdmin-4.4.15.10-all-languages phpmyadmin
+
 COPY virtual.conf /etc/httpd/conf.d/virtual.conf
 COPY phpMyAdmin.conf /etc/httpd/conf.d/phpMyAdmin.conf
 COPY my.cnf /etc/my.cnf
 COPY config.inc.php /var/www/phpmyadmin/config.inc.php
-RUN  chmod 660 /var/www/phpmyadmin/config.inc.php
 COPY supervisord.conf /etc/supervisord.conf
 
 RUN /etc/init.d/mysqld start \
