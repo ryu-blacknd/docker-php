@@ -41,6 +41,7 @@ RUN yum -y install --enablerepo=remi,remi-php71 \
     php-phpunit-PHPUnit \
     php-pdo \
     php-xml \
+    composer \
     phpMyAdmin
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini

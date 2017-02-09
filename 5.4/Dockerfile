@@ -42,6 +42,7 @@ RUN yum -y install --enablerepo=remi \
     php-xml \
     php-tidy \
     php-bcmath \
+    composer \
     gettext \
     unzip
 
