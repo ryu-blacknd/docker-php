@@ -1,11 +1,5 @@
 FROM centos:6
 
-RUN sed -i '/^ZONE/d' /etc/sysconfig/clock
-RUN sed -i '/^UTC/d' /etc/sysconfig/clock
-RUN echo 'ZONE="Asia/Tokyo"' >> /etc/sysconfig/clock
-RUN echo 'UTC="false"' >> /etc/sysconfig/clock
-RUN cp -p /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-
 RUN yum -y install epel-release
 RUN rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 RUN yum -y update --enablerepo=remi
