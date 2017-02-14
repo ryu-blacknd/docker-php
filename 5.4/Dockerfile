@@ -40,9 +40,15 @@ RUN yum -y install --enablerepo=remi \
     gettext \
     unzip
 
+RUN /etc/init.d/mysqld start \
+ && mysqladmin -u root password 'password'
+
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
 RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
+
+RUN sed -i -e "s|^pdo_mysql.default_socket=.*$|pdo_mysql.default_socket = /tmp/mysql.sock|" /etc/php.ini
+RUN sed -i -e "s|^mysqli.default_socket =.*$|mysqli.default_socket = /tmp/mysql.sock|" /etc/php.ini
 
 #RUN sed -i -e "s|Allow from 127.0.0.1$|Allow from All|g" /etc/httpd/conf.d/phpMyAdmin.conf
 
@@ -60,9 +66,6 @@ COPY phpMyAdmin.conf /etc/httpd/conf.d/phpMyAdmin.conf
 COPY my.cnf /etc/my.cnf
 COPY config.inc.php /var/www/phpmyadmin/config.inc.php
 COPY supervisord.conf /etc/supervisord.conf
-
-RUN /etc/init.d/mysqld start \
- && mysqladmin -u root password 'password'
 
 WORKDIR /var/www/html
 
