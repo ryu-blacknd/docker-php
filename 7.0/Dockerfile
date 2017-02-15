@@ -53,12 +53,13 @@ RUN git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins
 RUN /root/.rbenv/plugins/ruby-build/install.sh
 ENV PATH /root/.rbenv/bin:$PATH
 RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
-RUN echo 'eval "$(rbenv init -)"' >> .bashrc
+RUN echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 
 ENV CONFIGURE_OPTS --disable-install-doc
 RUN rbenv install 2.3.3
 RUN rbenv global 2.3.3
-RUN gem install mailcatcher --no-document
+RUN ruby -v
+RUN gem install mailcatcher --no-rdoc --no-ri
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
