@@ -11,17 +11,24 @@ RUN echo 'LANG="ja_JP.UTF-8"' > /etc/sysconfig/i18n
 RUN yum -y install --enablerepo=remi,remi-php70 \
     curl \
     freetype-devel \
+    gcc \
+    gcc-c++ \
     gd-last \
     git \
     httpd \
     httpd-devel \
     ImageMagick-devel \
+    libcurl-devel \
     libmcrypt \
+    make \
     mysql-server \
     openssl-devel \
+    readline-devel \
+    sqlite-devel \
     supervisor \
     vim \
     wget \
+    zlib-devel \
     php \
     php-cli \
     php-devel \
@@ -41,9 +48,21 @@ RUN yum -y install --enablerepo=remi,remi-php70 \
 RUN /etc/init.d/mysqld start \
  && mysqladmin -u root password 'password'
 
+WORKDIR /usr/local
+RUN git clone git://github.com/sstephenson/rbenv.git rbenv \
+ && git clone git://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build \
+ && /usr/local/rbenv/plugins/ruby-build/install.sh \
+ && echo 'export PATH="/usr/local/rbenv/bin:$PATH"' >> ~/.bash_profile \
+ && echo 'eval "$(rbenv init -)"' >> ~/.bash_profile \
+ && source ~/.bash_profile \
+ && rbenv install 2.3.3 \
+ && rbenv global 2.3.3 \
+ && gem install mailcatcher --no-document
+
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
 RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
+RUN sed -i -e "s|^sendmail_path =.*$|sendmail_path = \"/usr/bin/env catchmail\"|" /etc/php.ini
 
 RUN sed -i -e "s|^pdo_mysql.default_socket=.*$|pdo_mysql.default_socket = /tmp/mysql.sock|" /etc/php.ini
 RUN sed -i -e "s|^mysqli.default_socket =.*$|mysqli.default_socket = /tmp/mysql.sock|" /etc/php.ini

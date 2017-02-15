@@ -6,6 +6,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "1080:1080"
     volumes:
       - ./html:/var/www/html
       - ./mysql_data:/var/lib/mysql
