@@ -12,7 +12,7 @@ https://hub.docker.com/r/ryublacknd/php/
 ## 概要
 
 * CentOS 6
-* Apache 2.2
+* Apache 2.2 (+ mod_ssl)
 * PHP（Tag: [5.3](https://github.com/ryu-blacknd/docker-php/tree/master/5.3), [5.4](https://github.com/ryu-blacknd/docker-php/tree/master/5.4), [5.5](https://github.com/ryu-blacknd/docker-php/tree/master/5.5), [5.6](https://github.com/ryu-blacknd/docker-php/tree/master/5.6), [7.0](https://github.com/ryu-blacknd/docker-php/tree/master/7.0),  [7.1](https://github.com/ryu-blacknd/docker-php/tree/master/7.1), [latest](https://github.com/ryu-blacknd/docker-php/tree/master/7.1)）
 * MySQL 5.1 / 5.5 (PHP 5.3環境ではMySQL 5.1)
 * phpMyAdmin 4
@@ -20,7 +20,7 @@ https://hub.docker.com/r/ryublacknd/php/
 * Ruby 2.3.3
 * Mailcatcher
 * 日本語フォント (IPAゴシック、IPA明朝、VLゴシック)
-* その他 (git, vim, curl, wget, freetype, composer等)
+* その他 (gcc, make, git, vim, curl, wget, freetype, composer等)
 
 ## 起動方法
 

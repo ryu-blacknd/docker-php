@@ -21,6 +21,7 @@ RUN yum -y install \
     libcurl-devel \
     libmcrypt \
     make \
+    mod_ssl \
     mysql-server \
     openssl-devel \
     readline-devel \
@@ -44,6 +45,13 @@ RUN yum -y install \
     php-xml \
     composer \
     phpMyAdmin
+
+RUN openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -subj /CN=localhost \
+    -keyout /etc/httpd/server.key \
+    -out /etc/httpd/server.crt
+RUN sed -i -e "s|^SSLCertificateFile /etc/pki/tls/certs/localhost.crt$|SSLCertificateFile /etc/httpd/server.key|" /etc/httpd/conf.d/ssl.conf
+RUN sed -i -e "s|^SSLCertificateKeyFile /etc/pki/tls/private/localhost.key$|SSLCertificateKeyFile /etc/httpd/server.key|" /etc/httpd/conf.d/ssl.conf
 
 RUN /etc/init.d/mysqld start \
  && mysqladmin -u root password 'password'
