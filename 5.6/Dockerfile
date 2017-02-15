@@ -48,16 +48,17 @@ RUN yum -y install --enablerepo=remi,remi-php56 \
 RUN /etc/init.d/mysqld start \
  && mysqladmin -u root password 'password'
 
-WORKDIR /usr/local
-RUN git clone git://github.com/sstephenson/rbenv.git rbenv \
- && git clone git://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build \
- && /usr/local/rbenv/plugins/ruby-build/install.sh \
- && echo 'export PATH="/usr/local/rbenv/bin:$PATH"' >> ~/.bash_profile \
- && echo 'eval "$(rbenv init -)"' >> ~/.bash_profile \
- && source ~/.bash_profile \
- && rbenv install 2.3.3 \
- && rbenv global 2.3.3 \
- && gem install mailcatcher --no-document
+RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
+RUN git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins/ruby-build
+RUN /root/.rbenv/plugins/ruby-build/install.sh
+ENV PATH /root/.rbenv/bin:$PATH
+RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
+RUN echo 'eval "$(rbenv init -)"' >> .bashrc
+
+ENV CONFIGURE_OPTS --disable-install-doc
+RUN rbenv install 2.3.3
+RUN rbenv global 2.3.3
+RUN gem install mailcatcher --no-document
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini

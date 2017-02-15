@@ -17,6 +17,7 @@ https://hub.docker.com/r/ryublacknd/php/
 * MySQL 5.1 / 5.5 (PHP 5.3環境ではMySQL 5.1)
 * phpMyAdmin 4
 * GD, ImageMagick 6
+* Ruby 2.3.3
 * Mailcatcher
 * 日本語フォント (IPAゴシック、IPA明朝、VLゴシック)
 * その他 (git, vim, curl, wget, freetype, composer等)
@@ -40,7 +41,7 @@ $ docker run -d -v ./html:/var/www/html -v ./mysql_data:/var/lib/mysql -p 80:80 
 $ docker-compose up -d
 ```
 
-##### Kitematicで起動する場合
+#### Kitematicで起動する場合
 
 GUIで操作できるため手軽だが、ボリュームのマウント指定ができない。  
 そのため少なくとも現バージョンでは**起動に使用するのは非推奨**。
@@ -80,7 +81,7 @@ $ docker exec -it php70 bash
 
 ## 開発用メールサーバについて
 
-[MailCatcher](https://mailcatcher.me/)が疑似SMTPサーバとして動作する。PHPのSendmail代替としても登録済み。  
+[MailCatcher](https://mailcatcher.me/)が疑似SMTPサーバとして動作する。PHPのSendmail代替としても設定済み。  
 MailCatcherが受け取ったメールは、実際に送信はせずデータとして蓄積され、Webメールインターフェースで確認できる。
 
 Webメールインターフェースには、以下でアクセスできる。
