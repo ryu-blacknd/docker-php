@@ -4,8 +4,8 @@ services:
     container_name: php70
     image: ryublacknd/php:7.0
     ports:
-      - "8080:80"
-      - "8443:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./html:/var/www/html
       - ./mysql_data:/var/lib/mysql
