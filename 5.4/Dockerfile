@@ -65,6 +65,7 @@ RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
 RUN git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins/ruby-build
 RUN /root/.rbenv/plugins/ruby-build/install.sh
 ENV PATH /root/.rbenv/bin:$PATH
+ENV PATH /root/.rbenv/shims:$PATH
 RUN echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 RUN source /root/.bash_profile
 
@@ -76,7 +77,7 @@ RUN bash -l -c "gem install mailcatcher --no-rdoc --no-ri"
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
 RUN sed -i -e "s|^post_max_size =.*$|post_max_size = 64M|" /etc/php.ini
-RUN sed -i -e "s|^sendmail_path =.*$|sendmail_path = \"/usr/bin/env catchmail\"|" /etc/php.ini
+RUN sed -i -e "s|^sendmail_path =.*$|sendmail_path = /usr/bin/env catchmail --smtp-ip 127.0.0.1 --smtp-port 25 -f from@example.com|" /etc/php.ini
 
 RUN sed -i -e "s|^pdo_mysql.default_socket=.*$|pdo_mysql.default_socket = /tmp/mysql.sock|" /etc/php.ini
 RUN sed -i -e "s|^mysqli.default_socket =.*$|mysqli.default_socket = /tmp/mysql.sock|" /etc/php.ini
