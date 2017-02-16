@@ -61,13 +61,13 @@ RUN sed -i -e "s|^SSLCertificateKeyFile /etc/pki/tls/private/localhost.key$|SSLC
 RUN /etc/init.d/mysqld start \
  && mysqladmin -u root password 'password'
 
-RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
-RUN git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins/ruby-build
-RUN /root/.rbenv/plugins/ruby-build/install.sh
-ENV PATH /root/.rbenv/bin:$PATH
-ENV PATH /root/.rbenv/shims:$PATH
+RUN git clone https://github.com/sstephenson/rbenv.git /usr/local/rbenv
+RUN git clone https://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
+RUN /usr/local/rbenv/plugins/ruby-build/install.sh
+ENV PATH $PATH:/usr/local/rbenv/shims:/usr/local/rbenv/bin
+RUN echo 'PATH=$PATH:/usr/local/rbenv/shims:/usr/local/rbenv/bin' >> /etc/sysconfig/httpd
 RUN echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
-RUN source /root/.bash_profile
+RUN source ~/.bash_profile
 
 ENV CONFIGURE_OPTS --disable-install-doc
 RUN rbenv install 2.3.3
