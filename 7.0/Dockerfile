@@ -46,31 +46,22 @@ RUN yum -y install --enablerepo=remi,remi-php70 \
     composer \
     phpMyAdmin
 
-RUN pear install -a Mail Mail_Mime Net_SMTP Auth
-
 RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 3650 \
     -subj "/C=JP/ST=Aichi/L=Nagoya/O=Localhost/OU=Development/CN=localhost" \
     -keyout /etc/httpd/server.key \
     -out /etc/httpd/server.crt
-
 RUN sed -i -e "s|^SSLCertificateFile /etc/pki/tls/certs/localhost.crt$|SSLCertificateFile /etc/httpd/server.crt|" /etc/httpd/conf.d/ssl.conf
 RUN sed -i -e "s|^SSLCertificateKeyFile /etc/pki/tls/private/localhost.key$|SSLCertificateKeyFile /etc/httpd/server.key|" /etc/httpd/conf.d/ssl.conf
 
 RUN /etc/init.d/mysqld start \
  && mysqladmin -u root password 'password'
 
-RUN git clone https://github.com/sstephenson/rbenv.git /usr/local/rbenv
-RUN git clone https://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
-RUN /usr/local/rbenv/plugins/ruby-build/install.sh
-ENV PATH $PATH:/usr/local/rbenv/shims:/usr/local/rbenv/bin
-RUN echo 'PATH=$PATH:/usr/local/rbenv/shims:/usr/local/rbenv/bin' >> /etc/sysconfig/httpd
-RUN echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
-RUN source ~/.bash_profile
+RUN yum -y install https://github.com/feedforce/ruby-rpm/releases/download/2.3.3/ruby-2.3.3-1.el6.x86_64.rpm
 
 ENV CONFIGURE_OPTS --disable-install-doc
-RUN rbenv install 2.3.3
-RUN rbenv global 2.3.3
 RUN bash -l -c "gem install mailcatcher --no-rdoc --no-ri"
+
+RUN pear install -a Mail Mail_Mime Net_SMTP Auth
 
 RUN sed -i -e "s|^;date.timezone =.*$|date.timezone = Asia/Tokyo|" /etc/php.ini
 RUN sed -i -e "s|^upload_max_filesize =.*$|upload_max_filesize = 64M|" /etc/php.ini
