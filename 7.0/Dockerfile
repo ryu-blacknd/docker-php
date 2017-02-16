@@ -46,6 +46,8 @@ RUN yum -y install --enablerepo=remi,remi-php70 \
     composer \
     phpMyAdmin
 
+RUN pear install -a Mail Mail_Mime Net_SMTP Auth
+
 RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 3650 \
     -subj "/C=JP/ST=Aichi/L=Nagoya/O=Localhost/OU=Development/CN=localhost" \
     -keyout /etc/httpd/server.key \
@@ -61,6 +63,7 @@ RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
 RUN git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins/ruby-build
 RUN /root/.rbenv/plugins/ruby-build/install.sh
 ENV PATH /root/.rbenv/bin:$PATH
+ENV PATH /root/.rbenv/shims:$PATH
 RUN echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 RUN source /root/.bash_profile
 

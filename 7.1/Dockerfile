@@ -46,6 +46,8 @@ RUN yum -y install --enablerepo=remi,remi-php71 \
     composer \
     phpMyAdmin
 
+RUN pear install -a Mail Mail_Mime Net_SMTP Auth
+
 RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 3650 \
     -subj "/C=JP/ST=Aichi/L=Nagoya/O=Localhost/OU=Development/CN=localhost" \
     -keyout /etc/httpd/server.key \
