@@ -46,11 +46,12 @@ RUN yum -y install --enablerepo=remi,remi-php71 \
     composer \
     phpMyAdmin
 
-RUN openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
-    -subj /CN=localhost \
+RUN openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 3650 \
+    -subj "/C=JP/ST=Aichi/L=Nagoya/O=Localhost/OU=Development/CN=localhost" \
     -keyout /etc/httpd/server.key \
     -out /etc/httpd/server.crt
-RUN sed -i -e "s|^SSLCertificateFile /etc/pki/tls/certs/localhost.crt$|SSLCertificateFile /etc/httpd/server.key|" /etc/httpd/conf.d/ssl.conf
+
+RUN sed -i -e "s|^SSLCertificateFile /etc/pki/tls/certs/localhost.crt$|SSLCertificateFile /etc/httpd/server.crt|" /etc/httpd/conf.d/ssl.conf
 RUN sed -i -e "s|^SSLCertificateKeyFile /etc/pki/tls/private/localhost.key$|SSLCertificateKeyFile /etc/httpd/server.key|" /etc/httpd/conf.d/ssl.conf
 
 RUN /etc/init.d/mysqld start \

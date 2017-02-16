@@ -29,7 +29,7 @@ https://hub.docker.com/r/ryublacknd/php/
 作業するディレクトリ (フォルダ) を作成し、その中で以下のコマンドを実行。
 
 ```
-$ docker run -d -v ./html:/var/www/html -v ./mysql_data:/var/lib/mysql -p 80:80 -p 443:443 ryublacknd/php:7.0
+$ docker run -d -v ./html:/var/www/html -v ./mysql_data:/var/lib/mysql -p 80:80 -p 443:443 -p 1080:1080 ryublacknd/php:7.0
 ```
 
 #### docker-composeコマンドで起動する場合
