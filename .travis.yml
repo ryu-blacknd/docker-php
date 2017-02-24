@@ -1,5 +1,8 @@
 sudo: required
 
+services:
+  - docker
+
 env:
   matrix:
     - DOCKERFILE="5.3"
@@ -9,14 +12,14 @@ env:
     - DOCKERFILE="7.0"
     - DOCKERFILE="7.1"
 
-services:
-  - docker
-
 before_script:
-  - docker version
-
-script:
   - docker build -t ${DOCKERFILE} ./${DOCKERFILE}
 
+script:
+  - docker images ryublacknd/php:${DOCKERFILE}
+
 after_script:
-  - docker images
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -e="${DOCKER_EMAIL}" -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
+    docker push ryublacknd/php:${DOCKERFILE};
+    fi
